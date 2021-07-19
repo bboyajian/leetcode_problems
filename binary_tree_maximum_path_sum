@@ -1,0 +1,30 @@
+Given a binary tree, what is the maximum sum of the nodes along any path in the tree? The solution uses LeetCode's implementation of binary trees, where for each node, node.val denote the node's numerical value, node.left denotes the tree originating at the node's left node, and node.right denotes the tree originating at the node's right node.
+
+class Solution:
+    def maxPathSum(self, root: TreeNode) -> int:
+        sol = -inf # solution, choose smallest possible initial value
+        levels = [] # initialize level order traversal of tree
+        level = [root] # first level of tree
+        while level != []:
+            levels.append(level) # add new level of tree to levels
+            new_level = [] # initialize new level
+            for x in level:
+                if x.left != None:
+                    new_level.append(x.left)
+                if x.right != None:
+                    new_level.append(x.right)
+            level = new_level # replace previous level with new level
+        h = len(levels)
+        for i in range(h-1, -1, -1): # iterate backwards from bottom level to top
+            for x in levels[i]: # iterate over every node in ith level of tree
+                left_sum = 0 # maximal sum of one-direction path to the left of x
+                right_sum = 0 # maximal sum of one-direction path to the right of x
+                if x.left != None:
+                    left_sum = max(x.left.val, 0)
+                if x.right != None:
+                    right_sum = max(x.right.val, 0)
+				# left_sum and right_sum are positive or zero because we avoid any sub-path with negative sum
+                if x.val + left_sum + right_sum > sol: # maximal sum of path with x at top
+                sol = max(sol, x.val + left_sum + right_sum) # update sol if maximal sum of path with x at top is greater than sol
+                x.val += max(left_sum, right_sum) # maximal sum of one-direction path with x at top
+        return sol
