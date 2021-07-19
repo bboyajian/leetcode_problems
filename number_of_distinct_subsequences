@@ -1,0 +1,20 @@
+Given two strings s and t, return the number of distinct subsequences of s which equals t. A string's subsequence is a new string formed from the original string by deleting some (can be none) of the characters without disturbing the remaining characters' relative positions. (i.e., "ACE" is a subsequence of "ABCDE" while "AEC" is not).
+
+class Solution:
+    def numDistinct(self, s: str, t: str) -> int:
+        n = len(s)
+        m = len(t)
+        if n == 0 or m == 0:
+            return 0
+        cumsum = 1
+        d = dict()
+        for i in range(m):
+            new_d = dict()
+            for j in range(n):
+                if s[j] == t[i]:
+                    new_d[j] = cumsum
+                if j in d.keys():
+                    cumsum += d[j]
+            d = new_d
+            cumsum = 0
+        return sum(d[i] for i in d.keys())
